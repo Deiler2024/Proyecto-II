@@ -1,0 +1,5 @@
+mkdir -p assets cp /usr/share/fonts/truetype/dejavu/DejaVuSans.ttf assets/arial.ttf
+
+g++ src/*.cpp -o game -lsfml-graphics -lsfml-window -lsfml-system
+
+./game

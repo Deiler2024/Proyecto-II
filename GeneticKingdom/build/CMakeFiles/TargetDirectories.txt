@@ -1,0 +1,2 @@
+/home/deiler/Documentos/GitHub/Proyecto-II/GeneticKingdom/build/CMakeFiles/edit_cache.dir
+/home/deiler/Documentos/GitHub/Proyecto-II/GeneticKingdom/build/CMakeFiles/rebuild_cache.dir

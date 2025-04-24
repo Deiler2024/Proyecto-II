@@ -12,6 +12,9 @@ void Tile::setType(TileType newType) {
         case TileType::Empty:  shape.setFillColor(sf::Color::White); break;
         case TileType::Tower:  shape.setFillColor(sf::Color::Green); break;
         case TileType::Path:   shape.setFillColor(sf::Color::Yellow); break;
+        case TileType::Bridge: shape.setFillColor(sf::Color(100, 100, 100)); break;
+
+ 
     }
 }
 

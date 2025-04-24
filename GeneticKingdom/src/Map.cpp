@@ -29,6 +29,14 @@ void Map::handleClick(float mouseX, float mouseY, TileType type) {
     int row = mouseY / tileSize;
 
     if (row >= 0 && row < rows && col >= 0 && col < cols) {
-        setTileType(row, col, type);
+        TileType currentType = grid[row][col].getType();
+
+        // ❌ No se permite colocar torres sobre el puente
+        if (currentType == TileType::Bridge && type == TileType::Tower) {
+            return;
+        }
+
+        grid[row][col].setType(type);
     }
 }
+

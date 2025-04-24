@@ -4,7 +4,8 @@
 enum class TileType {
     Empty,
     Tower,
-    Path
+    Path ,
+    Bridge 
 };
 
 class Tile {

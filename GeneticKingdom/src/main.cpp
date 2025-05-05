@@ -1,14 +1,16 @@
 #include "Map.h"
+#include "Button.h"
 #include <SFML/Graphics.hpp>
 #include <vector>
 
 int main() {
-    sf::RenderWindow window(sf::VideoMode(800, 600), "Genetic Kingdom");
-    window.setFramerateLimit(60);
-
     const int rows = 12;
     const int cols = 16;
     const float tileSize = 50.0f;
+    const int menuWidth = 300; // 🆕 Espacio reservado para el menú
+
+    sf::RenderWindow window(sf::VideoMode(cols * tileSize + menuWidth, rows * tileSize), "Genetic Kingdom");
+    window.setFramerateLimit(60);
 
     Map gameMap(rows, cols, tileSize);
 
@@ -29,14 +31,31 @@ int main() {
         
     };
 
-    // 🏗️ Construir el mapa a partir de la matriz
-    for (int row = 0; row < rows; ++row) {
+      // 🏗️ Construir el mapa a partir de la matriz
+      for (int row = 0; row < rows; ++row) {
         for (int col = 0; col < cols; ++col) {
             if (mapLayout[row][col] == 1) {
                 gameMap.setTileType(row, col, TileType::Bridge);
             }
         }
     }
+
+    // 🎯 Texturas de los botones
+    sf::Texture archerTexture, mageTexture, artilleryTexture;
+    archerTexture.loadFromFile("/home/deiler/Documentos/GitHub/Proyecto-II/GeneticKingdom/src/archer.png");
+    mageTexture.loadFromFile("/home/deiler/Documentos/GitHub/Proyecto-II/GeneticKingdom/src/mage.png");
+    artilleryTexture.loadFromFile("/home/deiler/Documentos/GitHub/Proyecto-II/GeneticKingdom/src/artillery.png");
+
+    // 🎯 Botones
+    float buttonSize = 80.0f;
+    float buttonStartX = cols * tileSize + (menuWidth - buttonSize) / 2;
+
+    Button archerButton(buttonStartX, 50, buttonSize, archerTexture);
+    Button mageButton(buttonStartX, 150, buttonSize, mageTexture);
+    Button artilleryButton(buttonStartX, 250, buttonSize, artilleryTexture);
+
+    // Tipo de torre seleccionada (por defecto, arquero)
+    TileType selectedTowerType = TileType::Tower;
 
     while (window.isOpen()) {
         sf::Event event;
@@ -45,23 +64,51 @@ int main() {
                 (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape))
                 window.close();
 
-            // 🖱️ Click izquierdo: colocar torre
+            // 🖱️ Click izquierdo
             if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
                 float mouseX = event.mouseButton.x;
                 float mouseY = event.mouseButton.y;
-                gameMap.handleClick(mouseX, mouseY, TileType::Tower);
+
+                if (mouseX < cols * tileSize) {
+                    // Click en el mapa
+                    gameMap.handleClick(mouseX, mouseY, selectedTowerType);
+                } else {
+                    // Click en el menú
+                    if (archerButton.isClicked(mouseX, mouseY)) {
+                        selectedTowerType = TileType::Tower; // ❗Luego podríamos tener TileType::Archer
+                    } else if (mageButton.isClicked(mouseX, mouseY)) {
+                        selectedTowerType = TileType::Tower; // ❗Después cambiaremos para "MageTower"
+                    } else if (artilleryButton.isClicked(mouseX, mouseY)) {
+                        selectedTowerType = TileType::Tower; // ❗Después cambiaremos para "ArtilleryTower"
+                    }
+                }
             }
 
-            // 🖱️ Click derecho: limpiar celda (Empty)
+            // 🖱️ Click derecho: limpiar casilla
             if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Right) {
                 float mouseX = event.mouseButton.x;
                 float mouseY = event.mouseButton.y;
-                gameMap.handleClick(mouseX, mouseY, TileType::Empty);
+
+                if (mouseX < cols * tileSize) {
+                    gameMap.handleClick(mouseX, mouseY, TileType::Empty);
+                }
             }
         }
 
         window.clear();
         gameMap.draw(window);
+
+        // 🎨 Dibujar fondo del menú
+        sf::RectangleShape menuBackground(sf::Vector2f(menuWidth, rows * tileSize));
+        menuBackground.setPosition(cols * tileSize, 0);
+        menuBackground.setFillColor(sf::Color(200, 200, 200));
+        window.draw(menuBackground);
+
+        // 🎨 Dibujar botones
+        archerButton.draw(window);
+        mageButton.draw(window);
+        artilleryButton.draw(window);
+
         window.display();
     }
 

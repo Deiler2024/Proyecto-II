@@ -55,7 +55,7 @@ int main() {
     Button artilleryButton(buttonStartX, 250, buttonSize, artilleryTexture);
 
     // Tipo de torre seleccionada (por defecto, arquero)
-    TileType selectedTowerType = TileType::Tower;
+    TileType selectedTowerType = TileType::ArcherTower;
 
     while (window.isOpen()) {
         sf::Event event;
@@ -73,14 +73,14 @@ int main() {
                     // Click en el mapa
                     gameMap.handleClick(mouseX, mouseY, selectedTowerType);
                 } else {
-                    // Click en el menú
                     if (archerButton.isClicked(mouseX, mouseY)) {
-                        selectedTowerType = TileType::Tower; // ❗Luego podríamos tener TileType::Archer
+                        selectedTowerType = TileType::ArcherTower;
                     } else if (mageButton.isClicked(mouseX, mouseY)) {
-                        selectedTowerType = TileType::Tower; // ❗Después cambiaremos para "MageTower"
+                        selectedTowerType = TileType::MageTower;
                     } else if (artilleryButton.isClicked(mouseX, mouseY)) {
-                        selectedTowerType = TileType::Tower; // ❗Después cambiaremos para "ArtilleryTower"
+                        selectedTowerType = TileType::ArtilleryTower;
                     }
+                    
                 }
             }
 

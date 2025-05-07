@@ -3,9 +3,10 @@
 
 enum class TileType {
     Empty,
-    Tower,
-    Path ,
-    Bridge 
+    Bridge,
+    ArcherTower,   // 🏹
+    MageTower,     // 🔮
+    ArtilleryTower // 💣
 };
 
 class Tile {

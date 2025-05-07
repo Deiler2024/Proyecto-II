@@ -1,6 +1,7 @@
 #include "Map.h"
 #include "Button.h"
 #include <SFML/Graphics.hpp>
+#include <iostream>
 #include <vector>
 
 int main() {
@@ -42,9 +43,20 @@ int main() {
 
     // 🎯 Texturas de los botones
     sf::Texture archerTexture, mageTexture, artilleryTexture;
-    archerTexture.loadFromFile("/home/deiler/Documentos/GitHub/Proyecto-II/GeneticKingdom/src/archer.png");
-    mageTexture.loadFromFile("/home/deiler/Documentos/GitHub/Proyecto-II/GeneticKingdom/src/mage.png");
-    artilleryTexture.loadFromFile("/home/deiler/Documentos/GitHub/Proyecto-II/GeneticKingdom/src/artillery.png");
+
+        // Cargar imágenes desde la carpeta actual
+        if (!archerTexture.loadFromFile("./archer.png")) {
+            // Manejar error si la imagen no se carga
+            std::cerr << "Error al cargar archer.png" << std::endl;
+        }
+
+        if (!mageTexture.loadFromFile("./mage.png")) {
+            std::cerr << "Error al cargar mage.png" << std::endl;
+        }
+
+        if (!artilleryTexture.loadFromFile("./artillery.png")) {
+            std::cerr << "Error al cargar artillery.png" << std::endl;
+        }
 
     // 🎯 Botones
     float buttonSize = 80.0f;

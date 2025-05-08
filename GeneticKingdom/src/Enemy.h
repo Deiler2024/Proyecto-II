@@ -1,14 +1,30 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 
-class Button {
-private:
-    sf::RectangleShape shape;
-    sf::Sprite icon;
+class Enemy {
+protected:
+    float health;
+    float speed;
+    float arrowResistance;
+    float magicResistance;
+    float artilleryResistance;
+    sf::Vector2f position; // Posición actual del enemigo
 
 public:
-    Button(float x, float y, float size, const sf::Texture& texture);
+    Enemy(float health, float speed, float arrowRes, float magicRes, float artilleryRes);
 
-    void draw(sf::RenderWindow& window) const;
-    bool isClicked(float mouseX, float mouseY) const;
+    virtual void update(float deltaTime) = 0; // Movimiento
+    virtual void draw(sf::RenderWindow& window) = 0;
+
+    float getHealth() const;
+    sf::Vector2f getPosition() const;
+
+    // 🆕 Esta función nueva:
+    void setPosition(const sf::Vector2f& pos) {
+        position = pos;
+    }
+    
+    void takeDamage(float amount, const std::string& damageType); // Daño recibido según tipo
+
+    virtual ~Enemy() = default;
 };

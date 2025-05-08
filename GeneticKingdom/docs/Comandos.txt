@@ -2,4 +2,8 @@ mkdir -p assets cp /usr/share/fonts/truetype/dejavu/DejaVuSans.ttf assets/arial.
 
 g++ src/*.cpp -o game -lsfml-graphics -lsfml-window -lsfml-system
 
-./game
+
+g++ *.cpp -o game -lsfml-graphics -lsfml-window -lsfml-system        comando para ejecutar los .cpp en la carpeta actual
+
+
+./game 

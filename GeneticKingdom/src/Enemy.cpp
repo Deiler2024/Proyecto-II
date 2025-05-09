@@ -14,10 +14,12 @@ sf::Vector2f Enemy::getPosition() const {
 
 void Enemy::takeDamage(float amount, const std::string& damageType) {
     if (damageType == "arrow") {
-        health -= amount * (1.0f - arrowResistance);
+        amount *= (1.0f - arrowResistance);
     } else if (damageType == "magic") {
-        health -= amount * (1.0f - magicResistance);
+        amount *= (1.0f - magicResistance);
     } else if (damageType == "artillery") {
-        health -= amount * (1.0f - artilleryResistance);
+        amount *= (1.0f - artilleryResistance);
     }
+    health -= amount;
 }
+

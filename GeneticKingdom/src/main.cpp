@@ -5,6 +5,9 @@
 #include <vector>
 #include "Ogre.h"
 #include <vector>
+#include "TowerManager.h"
+
+
 
 
 std::vector<Enemy*> enemies; // Lista global de enemigos
@@ -24,7 +27,7 @@ int main() {
 
     // 🧱 Matriz de diseño: 1 = puente, 0 = vacío
     std::vector<std::vector<int>> mapLayout = {
-        {1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0}, // (0,0) inicio
+        {3,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0}, // (0,0) inicio
         {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0}, // baja a la derecha
         {0,0,0,0,0,0,1,0,0,0,0,0,1,0,1,0}, // gira hacia abajo
         {0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0}, // sube a la izquierda
@@ -40,10 +43,9 @@ int main() {
     };
 
     
-    // 🎯 Texturas de los botones y del castillo
+    // 🎯 Texturas de botones y castillo
     sf::Texture archerTexture, mageTexture, artilleryTexture, castleTexture;
 
-    // Cargar imágenes
     if (!archerTexture.loadFromFile("./archer.png")) {
         std::cerr << "Error al cargar archer.png" << std::endl;
     }
@@ -55,22 +57,33 @@ int main() {
     }
     if (!castleTexture.loadFromFile("./castle.png")) {
         std::cerr << "Error al cargar castle.png" << std::endl;
-    }    
-    // 📍 Posición del castillo
-    sf::Vector2f castlePosition;
+    }
 
-    // 🏗️ Construir el mapa a partir de la matriz y encontrar el castillo
+    // 📍 Posición del castillo y spawn points
+    sf::Vector2f castlePosition;
+    std::vector<sf::Vector2i> spawnPoints;
+    sf::Vector2i castleCell;
+
+    // --- Construir mapa y detectar spawns y castillo ---
     for (int row = 0; row < rows; ++row) {
         for (int col = 0; col < cols; ++col) {
             if (mapLayout[row][col] == 1) {
                 gameMap.setTileType(row, col, TileType::Bridge);
             } else if (mapLayout[row][col] == 2) {
-                // Guardar la posición del castillo
-                castlePosition = sf::Vector2f(col * tileSize, row * tileSize);
-                gameMap.setTileType(row, col, TileType::Bridge); // Opcional: considerar como puente si quieres que caminen hacia él
+                castleCell = {col, row};
+                castlePosition = sf::Vector2f(col * tileSize, row * tileSize); // <-- Aquí corregido
+                gameMap.setTileType(row, col, TileType::Bridge);
+            } else if (mapLayout[row][col] == 3) {
+                spawnPoints.push_back({col, row});
             }
         }
     }
+
+    // --- Spawnear enemigos ---
+    for (auto& spawn : spawnPoints) {
+        enemies.push_back(new Ogre(spawn, castleCell, mapLayout));
+    }
+
 
     // 🎯 Botones
     float buttonSize = 80.0f;
@@ -84,14 +97,11 @@ int main() {
     TileType selectedTowerType = TileType::ArcherTower;
 
 
-        // 👹 Spawn inicial de prueba
-    for (int i = 0; i < 5; ++i) {
-        Ogre* ogre = new Ogre();
-        ogre->setPosition(sf::Vector2f(-i * 100.f, 100.f)); // Espaciados fuera de pantalla
-        enemies.push_back(ogre);
-    }
+    // 🏰 Castle Manager
+    TowerManager towerManager;
     
 
+    // 🎮 Bucle principal
     while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
@@ -105,8 +115,17 @@ int main() {
                 float mouseY = event.mouseButton.y;
 
                 if (mouseX < cols * tileSize) {
+                    // 📍 Click dentro del mapa
                     gameMap.handleClick(mouseX, mouseY, selectedTowerType);
+
+                    // 🏹 También agregar la torre al TowerManager
+                    int col = mouseX / tileSize;
+                    int row = mouseY / tileSize;
+                    sf::Vector2f towerPos(col * tileSize, row * tileSize);
+                    towerManager.addTower(towerPos, selectedTowerType);
+
                 } else {
+                    // 📍 Click en el menú de botones
                     if (archerButton.isClicked(mouseX, mouseY)) {
                         selectedTowerType = TileType::ArcherTower;
                     } else if (mageButton.isClicked(mouseX, mouseY)) {
@@ -116,6 +135,7 @@ int main() {
                     }
                 }
             }
+
 
             // 🖱️ Click derecho: limpiar casilla
             if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Right) {
@@ -130,10 +150,14 @@ int main() {
 
         float deltaTime = clock.restart().asSeconds();
 
-        // Actualizar enemigos
+        // 🔄 Actualizar enemigos
         for (Enemy* enemy : enemies) {
             enemy->update(deltaTime);
         }
+
+        // 🔥 Actualizar torres (ataques)
+        towerManager.update(deltaTime, enemies);
+
 
         window.clear();
         gameMap.draw(window);
@@ -143,24 +167,29 @@ int main() {
             enemy->draw(window);
         }
 
+        // 🏹 Dibujar torres (opcional: mostrar rango)
+        towerManager.draw(window);
+
+        
+
+
         // 🎨 Dibujar fondo del menú
         sf::RectangleShape menuBackground(sf::Vector2f(menuWidth, rows * tileSize));
         menuBackground.setPosition(cols * tileSize, 0);
         menuBackground.setFillColor(sf::Color(200, 200, 200));
         window.draw(menuBackground);
 
-        // 🎨 Dibujar botones
+        // 🎯 Dibujar botones
         archerButton.draw(window);
         mageButton.draw(window);
         artilleryButton.draw(window);
 
-        // 🎨 Dibujar castillo
+        // 🏰 Dibujar castillo
         sf::Sprite castleSprite;
         castleSprite.setTexture(castleTexture);
         castleSprite.setPosition(castlePosition);
         castleSprite.setScale(tileSize / castleTexture.getSize().x, tileSize / castleTexture.getSize().y);
         window.draw(castleSprite);
-
 
         window.display();
     }

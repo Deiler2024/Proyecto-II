@@ -1,30 +1,36 @@
-#include "Ogre.h"
+// Mercenary.cpp
+#include "Mercenary.h"
 #include <cmath>
+#include <iostream>
 #include "WalkingEnemy.h"
 
 
 
-sf::Texture Ogre::texture;
-bool Ogre::textureLoaded = false;
+sf::Texture Mercenary::texture;
+bool Mercenary::textureLoaded = false;
 
-Ogre::Ogre(const sf::Vector2i& spawnCell, const sf::Vector2i& castleCell, const std::vector<std::vector<int>>& mapLayout)
-    : WalkingEnemy(150.f, 50.f, 0.1f, 0.6f, 0.8f, spawnCell, castleCell, mapLayout)
+Mercenary::Mercenary(const sf::Vector2i& spawnCell, const sf::Vector2i& castleCell, const std::vector<std::vector<int>>& mapLayout)
+    : WalkingEnemy(90.f, 70.f, 0.8f, 0.2f, 0.8f, spawnCell, castleCell, mapLayout) // Vida, velocidad, resistencias
 {
     if (!textureLoaded) {
-        if (!texture.loadFromFile("./ogre.png")) {
-            throw std::runtime_error("Error cargando ogre.png");
+        if (!texture.loadFromFile("./mercenary.png")) {
+            std::cerr << "Error cargando mercenary.png" << std::endl;
+            throw std::runtime_error("Error al cargar mercenary.png");
+        } else {
+            std::cout << "Mercenary texture loaded correctly!\n"; // ✅
         }
         textureLoaded = true;
     }
+    
     sprite.setTexture(texture);
     sprite.setScale(0.9f, 0.9f);
 }
 
-void Ogre::update(float deltaTime) {
+void Mercenary::update(float deltaTime) {
     moveAlongPath(deltaTime);
 }
 
-void Ogre::draw(sf::RenderWindow& window) {
+void Mercenary::draw(sf::RenderWindow& window) {
     sprite.setPosition(position);
     window.draw(sprite);
 
@@ -42,5 +48,3 @@ void Ogre::draw(sf::RenderWindow& window) {
         window.draw(lifeBar);
     }
 }
-
-

@@ -1,30 +1,30 @@
-#include "Ogre.h"
-#include <cmath>
+// DarkElf.cpp
+#include "DarkElf.h"
+#include "AStar.h"
 #include "WalkingEnemy.h"
 
 
+sf::Texture DarkElf::texture;
+bool DarkElf::textureLoaded = false;
 
-sf::Texture Ogre::texture;
-bool Ogre::textureLoaded = false;
-
-Ogre::Ogre(const sf::Vector2i& spawnCell, const sf::Vector2i& castleCell, const std::vector<std::vector<int>>& mapLayout)
-    : WalkingEnemy(150.f, 50.f, 0.1f, 0.6f, 0.8f, spawnCell, castleCell, mapLayout)
+DarkElf::DarkElf(const sf::Vector2i& spawnCell, const sf::Vector2i& castleCell, const std::vector<std::vector<int>>& mapLayout)
+    : WalkingEnemy(80.f, 130.f, 0.5f, 0.8f, 0.5f, spawnCell, castleCell, mapLayout) // Vida, velocidad, resistencias
 {
     if (!textureLoaded) {
-        if (!texture.loadFromFile("./ogre.png")) {
-            throw std::runtime_error("Error cargando ogre.png");
+        if (!texture.loadFromFile("./darkelf.png")) {
+            throw std::runtime_error("Error cargando darkelf.png");
         }
         textureLoaded = true;
     }
     sprite.setTexture(texture);
-    sprite.setScale(0.9f, 0.9f);
+    sprite.setScale(0.8f, 0.8f);
 }
 
-void Ogre::update(float deltaTime) {
+void DarkElf::update(float deltaTime) {
     moveAlongPath(deltaTime);
 }
 
-void Ogre::draw(sf::RenderWindow& window) {
+void DarkElf::draw(sf::RenderWindow& window) {
     sprite.setPosition(position);
     window.draw(sprite);
 
@@ -42,5 +42,3 @@ void Ogre::draw(sf::RenderWindow& window) {
         window.draw(lifeBar);
     }
 }
-
-

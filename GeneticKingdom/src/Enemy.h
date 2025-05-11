@@ -27,4 +27,15 @@ public:
     void takeDamage(float amount, const std::string& damageType); // Daño recibido según tipo
 
     virtual ~Enemy() = default;
+
+    void setStats(float newHealth, float newSpeed, float arrowRes, float magicRes, float artilleryRes) {
+        health = newHealth;
+        speed = newSpeed;
+        arrowResistance = arrowRes;
+        magicResistance = magicRes;
+        artilleryResistance = artilleryRes;
+    }
+
 };
+
+

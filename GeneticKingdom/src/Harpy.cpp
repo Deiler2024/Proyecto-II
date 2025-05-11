@@ -1,30 +1,29 @@
-#include "Ogre.h"
-#include <cmath>
+// Harpy.cpp
+#include "Harpy.h"
 #include "WalkingEnemy.h"
 
 
+sf::Texture Harpy::texture;
+bool Harpy::textureLoaded = false;
 
-sf::Texture Ogre::texture;
-bool Ogre::textureLoaded = false;
-
-Ogre::Ogre(const sf::Vector2i& spawnCell, const sf::Vector2i& castleCell, const std::vector<std::vector<int>>& mapLayout)
-    : WalkingEnemy(150.f, 50.f, 0.1f, 0.6f, 0.8f, spawnCell, castleCell, mapLayout)
+Harpy::Harpy(const sf::Vector2i& spawnCell, const sf::Vector2i& castleCell, const std::vector<std::vector<int>>& mapLayout)
+    : WalkingEnemy(60.f, 100.f, 0.5f, 0.5f, 1.0f, spawnCell, castleCell, mapLayout) // Vida, velocidad, resistencias
 {
     if (!textureLoaded) {
-        if (!texture.loadFromFile("./ogre.png")) {
-            throw std::runtime_error("Error cargando ogre.png");
+        if (!texture.loadFromFile("./harpy.png")) {
+            throw std::runtime_error("Error cargando harpy.png");
         }
         textureLoaded = true;
     }
     sprite.setTexture(texture);
-    sprite.setScale(0.9f, 0.9f);
+    sprite.setScale(0.7f, 0.7f);
 }
 
-void Ogre::update(float deltaTime) {
+void Harpy::update(float deltaTime) {
     moveAlongPath(deltaTime);
 }
 
-void Ogre::draw(sf::RenderWindow& window) {
+void Harpy::draw(sf::RenderWindow& window) {
     sprite.setPosition(position);
     window.draw(sprite);
 
@@ -42,5 +41,3 @@ void Ogre::draw(sf::RenderWindow& window) {
         window.draw(lifeBar);
     }
 }
-
-

@@ -39,9 +39,9 @@ TileType Tile::getType() const {
 void Tile::draw(sf::RenderWindow& window) const {
     if (!texturesLoaded) {
         // Solo cargar las texturas una vez
-        archerTexture.loadFromFile("/home/deiler/Documentos/GitHub/Proyecto-II/GeneticKingdom/src/archer.png");
-        mageTexture.loadFromFile("/home/deiler/Documentos/GitHub/Proyecto-II/GeneticKingdom/src/mage.png");
-        artilleryTexture.loadFromFile("/home/deiler/Documentos/GitHub/Proyecto-II/GeneticKingdom/src/artillery.png");
+        archerTexture.loadFromFile("./torre_archer.png");
+        mageTexture.loadFromFile("./torre_mage.png");
+        artilleryTexture.loadFromFile("./torre_artillery.png");
         texturesLoaded = true;
     }
 

@@ -1,11 +1,18 @@
+
 #include "Map.h"
 #include "Button.h"
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <vector>
-#include "Ogre.h"
-#include <vector>
 #include "TowerManager.h"
+#include <queue> // 👈 Para usar std::queue
+
+
+#include "DarkElf.h"
+#include "Harpy.h"
+#include "Mercenary.h"
+#include "Ogre.h"
+
 
 
 
@@ -17,6 +24,14 @@ int main() {
     const int cols = 16;
     const float tileSize = 50.0f;
     const int menuWidth = 300; // 🆕 Espacio reservado para el menú
+    int ogresToSpawn = 2;
+    int darkElvesToSpawn = 2;
+    int harpiesToSpawn = 2;
+    int mercenariesToSpawn = 2;
+    std::queue<Enemy*> pendingEnemies; // 🧠 Enemigos que todavía no han salido
+    float spawnTimer = 0.f;             // 🕒 Tiempo para controlar spawn
+    float spawnInterval = 1.0f;         // ⏳ Tiempo entre spawns (en segundos)
+
 
     sf::RenderWindow window(sf::VideoMode(cols * tileSize + menuWidth, rows * tileSize), "Genetic Kingdom");
     window.setFramerateLimit(60);
@@ -80,9 +95,14 @@ int main() {
     }
 
     // --- Spawnear enemigos ---
-    for (auto& spawn : spawnPoints) {
-        enemies.push_back(new Ogre(spawn, castleCell, mapLayout));
+    for (int i = 0; i < 2; ++i) {
+        pendingEnemies.push(new Ogre(spawnPoints[0], castleCell, mapLayout));
+        pendingEnemies.push(new DarkElf(spawnPoints[0], castleCell, mapLayout));
+        pendingEnemies.push(new Harpy(spawnPoints[0], castleCell, mapLayout));
+        pendingEnemies.push(new Mercenary(spawnPoints[0], castleCell, mapLayout));
     }
+    
+
 
 
     // 🎯 Botones
@@ -150,10 +170,30 @@ int main() {
 
         float deltaTime = clock.restart().asSeconds();
 
-        // 🔄 Actualizar enemigos
-        for (Enemy* enemy : enemies) {
-            enemy->update(deltaTime);
+        spawnTimer += deltaTime;
+
+        if (spawnTimer >= spawnInterval && !pendingEnemies.empty()) {
+            Enemy* nextEnemy = pendingEnemies.front();
+            pendingEnemies.pop();
+            enemies.push_back(nextEnemy);
+            spawnTimer = 0.f; // ⏳ Reseteamos el tiempo para esperar otro segundo
         }
+
+
+        // 🔄 Actualizar enemigos y eliminar los muertos
+        for (auto it = enemies.begin(); it != enemies.end(); ) {
+            Enemy* enemy = *it;
+            enemy->update(deltaTime);
+        
+            if (enemy->getHealth() <= 0.f) {
+                delete enemy;
+                it = enemies.erase(it);
+            } else {
+                ++it;
+            }
+        }
+        
+        
 
         // 🔥 Actualizar torres (ataques)
         towerManager.update(deltaTime, enemies);

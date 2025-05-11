@@ -10,7 +10,7 @@ sf::Texture Mercenary::texture;
 bool Mercenary::textureLoaded = false;
 
 Mercenary::Mercenary(const sf::Vector2i& spawnCell, const sf::Vector2i& castleCell, const std::vector<std::vector<int>>& mapLayout)
-    : WalkingEnemy(90.f, 70.f, 0.8f, 0.2f, 0.8f, spawnCell, castleCell, mapLayout) // Vida, velocidad, resistencias
+    : WalkingEnemy(90.f, 70.f, 0.1f, 0.9f, 0.1f, spawnCell, castleCell, mapLayout) // Vida, velocidad, resistencias
 {
     if (!textureLoaded) {
         if (!texture.loadFromFile("./mercenary.png")) {

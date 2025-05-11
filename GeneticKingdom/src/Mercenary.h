@@ -1,9 +1,13 @@
+#pragma once
+
 // Mercenary.h
 #include "Enemy.h"
 #include "AStar.h"
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include "WalkingEnemy.h"
+
+
 
 
 class Mercenary : public WalkingEnemy{

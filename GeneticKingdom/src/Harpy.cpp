@@ -7,7 +7,7 @@ sf::Texture Harpy::texture;
 bool Harpy::textureLoaded = false;
 
 Harpy::Harpy(const sf::Vector2i& spawnCell, const sf::Vector2i& castleCell, const std::vector<std::vector<int>>& mapLayout)
-    : WalkingEnemy(60.f, 100.f, 0.5f, 0.5f, 1.0f, spawnCell, castleCell, mapLayout) // Vida, velocidad, resistencias
+    : WalkingEnemy(60.f, 100.f, 0.5f, 0.5f, 0.0f, spawnCell, castleCell, mapLayout) // Vida, velocidad, resistencias
 {
     if (!textureLoaded) {
         if (!texture.loadFromFile("./harpy.png")) {
@@ -16,7 +16,7 @@ Harpy::Harpy(const sf::Vector2i& spawnCell, const sf::Vector2i& castleCell, cons
         textureLoaded = true;
     }
     sprite.setTexture(texture);
-    sprite.setScale(0.7f, 0.7f);
+    sprite.setScale(0.9f, 0.9f);
 }
 
 void Harpy::update(float deltaTime) {

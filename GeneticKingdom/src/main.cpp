@@ -12,6 +12,7 @@
 #include "Harpy.h"
 #include "Mercenary.h"
 #include "Ogre.h"
+#include "WaveManager.h"
 
 
 
@@ -24,15 +25,7 @@ int main() {
     const int cols = 16;
     const float tileSize = 50.0f;
     const int menuWidth = 300; // 🆕 Espacio reservado para el menú
-    int ogresToSpawn = 2;
-    int darkElvesToSpawn = 2;
-    int harpiesToSpawn = 2;
-    int mercenariesToSpawn = 2;
-    std::queue<Enemy*> pendingEnemies; // 🧠 Enemigos que todavía no han salido
-    float spawnTimer = 0.f;             // 🕒 Tiempo para controlar spawn
-    float spawnInterval = 1.0f;         // ⏳ Tiempo entre spawns (en segundos)
-
-
+    
     sf::RenderWindow window(sf::VideoMode(cols * tileSize + menuWidth, rows * tileSize), "Genetic Kingdom");
     window.setFramerateLimit(60);
 
@@ -94,13 +87,9 @@ int main() {
         }
     }
 
-    // --- Spawnear enemigos ---
-    for (int i = 0; i < 2; ++i) {
-        pendingEnemies.push(new Ogre(spawnPoints[0], castleCell, mapLayout));
-        pendingEnemies.push(new DarkElf(spawnPoints[0], castleCell, mapLayout));
-        pendingEnemies.push(new Harpy(spawnPoints[0], castleCell, mapLayout));
-        pendingEnemies.push(new Mercenary(spawnPoints[0], castleCell, mapLayout));
-    }
+    
+    WaveManager waveManager(spawnPoints[0], castleCell, mapLayout);
+
     
 
 
@@ -126,8 +115,9 @@ int main() {
         sf::Event event;
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed ||
-                (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape))
+                (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)) {
                 window.close();
+            }
 
             // 🖱️ Click izquierdo
             if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
@@ -156,7 +146,6 @@ int main() {
                 }
             }
 
-
             // 🖱️ Click derecho: limpiar casilla
             if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Right) {
                 float mouseX = event.mouseButton.x;
@@ -170,21 +159,15 @@ int main() {
 
         float deltaTime = clock.restart().asSeconds();
 
-        spawnTimer += deltaTime;
-
-        if (spawnTimer >= spawnInterval && !pendingEnemies.empty()) {
-            Enemy* nextEnemy = pendingEnemies.front();
-            pendingEnemies.pop();
-            enemies.push_back(nextEnemy);
-            spawnTimer = 0.f; // ⏳ Reseteamos el tiempo para esperar otro segundo
-        }
+        // 🧠 Actualizar oleadas
+        waveManager.update(deltaTime, enemies);
 
 
         // 🔄 Actualizar enemigos y eliminar los muertos
         for (auto it = enemies.begin(); it != enemies.end(); ) {
             Enemy* enemy = *it;
             enemy->update(deltaTime);
-        
+
             if (enemy->getHealth() <= 0.f) {
                 delete enemy;
                 it = enemies.erase(it);
@@ -192,13 +175,11 @@ int main() {
                 ++it;
             }
         }
-        
-        
 
         // 🔥 Actualizar torres (ataques)
         towerManager.update(deltaTime, enemies);
 
-
+        // 🎨 Dibujar todo
         window.clear();
         gameMap.draw(window);
 
@@ -207,11 +188,8 @@ int main() {
             enemy->draw(window);
         }
 
-        // 🏹 Dibujar torres (opcional: mostrar rango)
+        // 🏹 Dibujar torres
         towerManager.draw(window);
-
-        
-
 
         // 🎨 Dibujar fondo del menú
         sf::RectangleShape menuBackground(sf::Vector2f(menuWidth, rows * tileSize));
@@ -233,6 +211,7 @@ int main() {
 
         window.display();
     }
+
 
     // 🔥 Liberar memoria de los enemigos
     for (Enemy* enemy : enemies) {

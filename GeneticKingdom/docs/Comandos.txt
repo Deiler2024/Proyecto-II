@@ -7,3 +7,18 @@ g++ *.cpp -o game -lsfml-graphics -lsfml-window -lsfml-system        comando par
 
 
 ./game 
+
+
+(
+sudo apt update
+sudo apt install ttf-mscorefonts-installer
+)                                         intalar fuentes
+
+
+
+fc-list | grep "Arial"                   verificar la fuente instalada
+
+
+
+
+mkdir -p src && cp /usr/share/fonts/truetype/dejavu/DejaVuSans.ttf src/arial.ttf       instalar fuente en src (se debe estar en Genetickingdom)

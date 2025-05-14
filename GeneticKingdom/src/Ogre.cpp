@@ -7,6 +7,7 @@
 sf::Texture Ogre::texture;
 bool Ogre::textureLoaded = false;
 
+
 Ogre::Ogre(const sf::Vector2i& spawnCell, const sf::Vector2i& castleCell, const std::vector<std::vector<int>>& mapLayout)
     : WalkingEnemy(150.f, 50.f, 0.1f, 0.6f, 0.8f, spawnCell, castleCell, mapLayout)
 {
@@ -42,5 +43,6 @@ void Ogre::draw(sf::RenderWindow& window) {
         window.draw(lifeBar);
     }
 }
+
 
 

@@ -25,6 +25,20 @@ int main() {
     const int cols = 16;
     const float tileSize = 50.0f;
     const int menuWidth = 300; // 🆕 Espacio reservado para el menú
+    int coins = 200; // Monedas iniciales
+    const int archerCost = 30;
+    const int mageCost = 40;
+    const int artilleryCost = 50;
+
+
+    // 🆕 Al inicio del main, antes del bucle
+    sf::Font font;
+    if (!font.loadFromFile("./arial.ttf")) {
+        std::cerr << "❌ No se pudo cargar la fuente para mostrar las monedas.\n";
+    }
+
+
+
     
     sf::RenderWindow window(sf::VideoMode(cols * tileSize + menuWidth, rows * tileSize), "Genetic Kingdom");
     window.setFramerateLimit(60);
@@ -126,13 +140,27 @@ int main() {
 
                 if (mouseX < cols * tileSize) {
                     // 📍 Click dentro del mapa
-                    gameMap.handleClick(mouseX, mouseY, selectedTowerType);
-
-                    // 🏹 También agregar la torre al TowerManager
                     int col = mouseX / tileSize;
                     int row = mouseY / tileSize;
                     sf::Vector2f towerPos(col * tileSize, row * tileSize);
-                    towerManager.addTower(towerPos, selectedTowerType);
+
+                    // 💰 Costos
+                    int cost = 0;
+                    switch (selectedTowerType) {
+                        case TileType::ArcherTower: cost = 30; break;
+                        case TileType::MageTower: cost = 40; break;
+                        case TileType::ArtilleryTower: cost = 50; break;
+                        default: break;
+                    }
+
+                    if (coins >= cost) {
+                        gameMap.handleClick(mouseX, mouseY, selectedTowerType);
+                        towerManager.addTower(towerPos, selectedTowerType);
+                        coins -= cost;
+                        std::cout << "✅ Torre colocada. Monedas restantes: " << coins << "\n";
+                    } else {
+                        std::cout << "❌ No tienes suficientes monedas para esta torre\n";
+                    }
 
                 } else {
                     // 📍 Click en el menú de botones
@@ -145,6 +173,7 @@ int main() {
                     }
                 }
             }
+
 
             // 🖱️ Click derecho: limpiar casilla
             if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Right) {
@@ -162,13 +191,13 @@ int main() {
         // 🧠 Actualizar oleadas
         waveManager.update(deltaTime, enemies);
 
-
         // 🔄 Actualizar enemigos y eliminar los muertos
         for (auto it = enemies.begin(); it != enemies.end(); ) {
             Enemy* enemy = *it;
             enemy->update(deltaTime);
 
             if (enemy->getHealth() <= 0.f) {
+                coins += 10; // 💰 Recompensa por eliminar enemigo
                 delete enemy;
                 it = enemies.erase(it);
             } else {
@@ -209,7 +238,18 @@ int main() {
         castleSprite.setScale(tileSize / castleTexture.getSize().x, tileSize / castleTexture.getSize().y);
         window.draw(castleSprite);
 
+        // 💰 Dibujar cantidad de monedas
+        sf::Text coinText;
+        coinText.setFont(font); // Usamos la fuente ya cargada
+        coinText.setCharacterSize(20);
+        coinText.setFillColor(sf::Color::Black);
+        coinText.setString("Monedas: " + std::to_string(coins));
+        coinText.setPosition(cols * tileSize + 20, rows * tileSize - 40);
+        window.draw(coinText);
+
+
         window.display();
+
     }
 
 

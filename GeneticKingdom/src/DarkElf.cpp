@@ -42,3 +42,7 @@ void DarkElf::draw(sf::RenderWindow& window) {
         window.draw(lifeBar);
     }
 }
+
+int DarkElf::getReward() const {
+    return 15;
+}

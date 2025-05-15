@@ -35,6 +35,8 @@ public:
         magicResistance = magicRes;
         artilleryResistance = artilleryRes;
     }
+    virtual int getReward() const = 0; // ¡Recompensa al morir!
+
 
 };
 

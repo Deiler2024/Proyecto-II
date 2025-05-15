@@ -41,3 +41,7 @@ void Harpy::draw(sf::RenderWindow& window) {
         window.draw(lifeBar);
     }
 }
+
+int Harpy::getReward() const {
+    return 12;
+}

@@ -20,6 +20,14 @@
 
 std::vector<Enemy*> enemies; // Lista global de enemigos
 
+// 📊 Estadísticas del juego
+int currentGeneration = 1;
+int enemiesKilledThisWave = 0;
+std::vector<float> fitnessValues;
+float mutationProbability = 0.1f;
+int totalMutations = 0;
+
+
 int main() {
     const int rows = 12;
     const int cols = 16;
@@ -197,10 +205,13 @@ int main() {
             enemy->update(deltaTime);
 
             if (enemy->getHealth() <= 0.f) {
-                coins += 10; // 💰 Recompensa por eliminar enemigo
+                coins += enemy->getReward();              // 💰 Sumar monedas
+                waveManager.incrementEnemiesKilled();     // ☠️ Contar muertes correctamente
                 delete enemy;
                 it = enemies.erase(it);
-            } else {
+            }
+            
+            else {
                 ++it;
             }
         }
@@ -241,10 +252,16 @@ int main() {
         // 💰 Dibujar cantidad de monedas
         sf::Text coinText;
         coinText.setFont(font); // Usamos la fuente ya cargada
-        coinText.setCharacterSize(20);
+        coinText.setCharacterSize(18);
         coinText.setFillColor(sf::Color::Black);
-        coinText.setString("Monedas: " + std::to_string(coins));
-        coinText.setPosition(cols * tileSize + 20, rows * tileSize - 40);
+        coinText.setPosition(cols * tileSize + 20, rows * tileSize - 120);
+        coinText.setString(
+            "Monedas: " + std::to_string(coins) + "\n" +
+            "Generacion: " + std::to_string(currentGeneration) + "\n" +
+            "Muertes: " + std::to_string(waveManager.getEnemiesKilledThisWave()) + "\n"+
+            "Mutaciones: " + std::to_string(totalMutations) + "\n" +
+            "Probabilidad: " + std::to_string((int)(mutationProbability * 100)) + "%"
+        );
         window.draw(coinText);
 
 

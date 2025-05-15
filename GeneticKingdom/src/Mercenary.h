@@ -20,4 +20,6 @@ public:
     Mercenary(const sf::Vector2i& spawnCell, const sf::Vector2i& castleCell, const std::vector<std::vector<int>>& mapLayout);
     void update(float deltaTime) override;
     void draw(sf::RenderWindow& window) override;
+    int getReward() const override;
+
 };

@@ -48,3 +48,7 @@ void Mercenary::draw(sf::RenderWindow& window) {
         window.draw(lifeBar);
     }
 }
+
+int Mercenary::getReward() const {
+    return 18;
+}

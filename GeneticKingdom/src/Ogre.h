@@ -17,4 +17,10 @@ public:
 
     void update(float deltaTime) override;
     void draw(sf::RenderWindow& window) override;
+    int getReward() const override;
+
+    
+
 };
+
+

@@ -44,5 +44,9 @@ void Ogre::draw(sf::RenderWindow& window) {
     }
 }
 
+int Ogre::getReward() const {
+    return 10;
+}
+
 
 

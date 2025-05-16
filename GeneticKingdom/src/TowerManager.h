@@ -1,33 +1,35 @@
 #pragma once
-#include "Tile.h"
-#include "Enemy.h"
-#include <SFML/Graphics.hpp>
-#include <vector>
-#include "Projectile.h"
 
+#include "Tile.h"               // *Declaración de Tile y TileType*
+#include "Enemy.h"              // *Declaración base de Enemy*
+#include <SFML/Graphics.hpp>    // *SFML para gráficos y vectores*
+#include <vector>               // *Uso de std::vector para contenedores*
+#include "Projectile.h"         // *Clase Projectile para disparos*
 
+// Estructura que representa una torre en el juego
 struct Tower {
-    sf::Vector2f position;
-    TileType type;
-    float range;
-    float damage;
-    float fireCooldown;
-    float fireTimer;
+    sf::Vector2f position;        // *Posición en el mapa (coordenadas en pixeles)*
+    TileType type;                // *Tipo de torre (arquero, mago, artillería)*
+    float range;                  // *Radio de alcance para detectar enemigos*
+    float damage;                 // *Daño que inflige la torre*
+    float fireCooldown;           // *Tiempo entre disparos*
+    float fireTimer;              // *Temporizador para controlar disparos*
 };
 
+// Clase que administra todas las torres y sus proyectiles
 class TowerManager {
 private:
-    sf::Texture arrowTexture;
-    sf::Texture fireTexture;
-    sf::Texture cannonballTexture;
-    std::vector<Tower> towers;
-    std::vector<Projectile> projectiles;
+    sf::Texture arrowTexture;        // *Textura para proyectiles de tipo flecha*
+    sf::Texture fireTexture;         // *Textura para proyectiles mágicos*
+    sf::Texture cannonballTexture;   // *Textura para proyectiles de artillería*
+
+    std::vector<Tower> towers;           // *Contenedor de torres construidas*
+    std::vector<Projectile> projectiles; // *Contenedor de proyectiles activos*
 
 public:
-    TowerManager(); // <-- Constructor que carga imágenes
-    void addTower(const sf::Vector2f& pos, TileType type);
-    void update(float deltaTime, std::vector<Enemy*>& enemies);
-    void draw(sf::RenderWindow& window);
-    void upgradeTowerAt(const sf::Vector2f& pos);
-
+    TowerManager();                  // *Constructor: carga texturas para proyectiles*
+    void addTower(const sf::Vector2f& pos, TileType type);  // *Agregar torre nueva*
+    void update(float deltaTime, std::vector<Enemy*>& enemies); // *Actualizar torres y proyectiles*
+    void draw(sf::RenderWindow& window);                      // *Dibujar torres y proyectiles*
+    void upgradeTowerAt(const sf::Vector2f& pos);             // *Mejorar torre en posición dada*
 };

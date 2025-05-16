@@ -28,4 +28,6 @@ public:
     void addTower(const sf::Vector2f& pos, TileType type);
     void update(float deltaTime, std::vector<Enemy*>& enemies);
     void draw(sf::RenderWindow& window);
+    void upgradeTowerAt(const sf::Vector2f& pos);
+
 };

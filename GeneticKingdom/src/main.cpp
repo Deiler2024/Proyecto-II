@@ -45,6 +45,8 @@ int main() {
         std::cerr << "❌ No se pudo cargar la fuente para mostrar las monedas.\n";
     }
 
+    sf::Vector2f selectedTowerPos;  // 💠 Posición de la torre seleccionada
+    bool towerSelected = false;     // 🔘 Si hay una torre seleccionada
 
 
     
@@ -88,6 +90,12 @@ int main() {
     if (!castleTexture.loadFromFile("./castle.png")) {
         std::cerr << "Error al cargar castle.png" << std::endl;
     }
+    
+    sf::Texture upgradeTexture;
+    if (!upgradeTexture.loadFromFile("./upgrade.png")) {
+        std::cerr << "Error al cargar upgrade.png\n";
+    }
+
 
     // 📍 Posición del castillo y spawn points
     sf::Vector2f castlePosition;
@@ -120,9 +128,17 @@ int main() {
     float buttonSize = 80.0f;
     float buttonStartX = cols * tileSize + (menuWidth - buttonSize) / 2;
 
+    
+
+
+
     Button archerButton(buttonStartX, 50, buttonSize, archerTexture);
     Button mageButton(buttonStartX, 150, buttonSize, mageTexture);
     Button artilleryButton(buttonStartX, 250, buttonSize, artilleryTexture);
+    Button upgradeButton(buttonStartX + buttonSize + 10, 150, buttonSize, upgradeTexture); // Centrado verticalmente
+
+
+
 
     // Tipo de torre seleccionada (por defecto, arquero)
     TileType selectedTowerType = TileType::ArcherTower;
@@ -178,7 +194,25 @@ int main() {
                         selectedTowerType = TileType::MageTower;
                     } else if (artilleryButton.isClicked(mouseX, mouseY)) {
                         selectedTowerType = TileType::ArtilleryTower;
+                    } else if (upgradeButton.isClicked(mouseX, mouseY)) {
+                        if (towerSelected) {
+                            towerManager.upgradeTowerAt(selectedTowerPos);
+                            towerSelected = false;
+                        }
                     }
+                }
+            }
+            // 🖱️ Click derecho: seleccionar torre para mejora
+            if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Right) {
+                float mouseX = event.mouseButton.x;
+                float mouseY = event.mouseButton.y;
+
+                if (mouseX < cols * tileSize) {
+                    int col = mouseX / tileSize;
+                    int row = mouseY / tileSize;
+                    selectedTowerPos = sf::Vector2f(col * tileSize, row * tileSize);
+                    towerSelected = true;
+                    std::cout << "🏹 Torre seleccionada en: " << selectedTowerPos.x << ", " << selectedTowerPos.y << "\n";
                 }
             }
 
@@ -228,8 +262,11 @@ int main() {
             enemy->draw(window);
         }
 
+        
+
         // 🏹 Dibujar torres
         towerManager.draw(window);
+        
 
         // 🎨 Dibujar fondo del menú
         sf::RectangleShape menuBackground(sf::Vector2f(menuWidth, rows * tileSize));
@@ -237,6 +274,9 @@ int main() {
         menuBackground.setFillColor(sf::Color(200, 200, 200));
         window.draw(menuBackground);
 
+
+
+        upgradeButton.draw(window);
         // 🎯 Dibujar botones
         archerButton.draw(window);
         mageButton.draw(window);

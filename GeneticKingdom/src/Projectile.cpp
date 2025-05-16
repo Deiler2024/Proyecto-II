@@ -11,7 +11,7 @@ Projectile::Projectile(const sf::Vector2f& startPos, Enemy* target, float speed,
     // 🔥 Para prueba: No escalar pequeño, dejarlo tamaño original
     sprite.setScale(2.f, 2.f);
 
-    std::cout << "Se creó un projectile en " << startPos.x << ", " << startPos.y << std::endl;
+    //std::cout << "Se creó un projectile en " << startPos.x << ", " << startPos.y << std::endl;
 }
 
 void Projectile::update(float deltaTime) {
@@ -44,7 +44,7 @@ void Projectile::update(float deltaTime) {
 void Projectile::draw(sf::RenderWindow& window) const {
     if (active) {
         window.draw(sprite);
-        std::cout << "Dibujando projectile en " << sprite.getPosition().x << ", " << sprite.getPosition().y << std::endl;
+        //std::cout << "Dibujando projectile en " << sprite.getPosition().x << ", " << sprite.getPosition().y << std::endl;
     }
 }
 

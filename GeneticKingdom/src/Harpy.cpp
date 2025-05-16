@@ -9,7 +9,7 @@ bool Harpy::textureLoaded = false;        // *Marca si la textura ya fue cargada
 
 // 🛠 Constructor de Harpy: define atributos y carga textura si es necesario
 Harpy::Harpy(const sf::Vector2i& spawnCell, const sf::Vector2i& castleCell, const std::vector<std::vector<int>>& mapLayout)
-    : WalkingEnemy(60.f, 100.f, 0.5f, 0.5f, 0.0f, spawnCell, castleCell, mapLayout) // Vida, velocidad, resistencias
+    : WalkingEnemy(60.f, 100.f, 0.5f, 0.5f, 0.00001f, spawnCell, castleCell, mapLayout) // Vida, velocidad, resistencias
 {
     if (!textureLoaded) { // *Evita recargar la textura si ya se hizo una vez*
         if (!texture.loadFromFile("./harpy.png")) { // *Carga la imagen desde archivo*

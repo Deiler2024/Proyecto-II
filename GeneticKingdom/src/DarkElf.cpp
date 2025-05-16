@@ -51,3 +51,4 @@ void DarkElf::draw(sf::RenderWindow& window) {
 int DarkElf::getReward() const {
     return 15; // *Valor de recompensa fijo*
 }
+

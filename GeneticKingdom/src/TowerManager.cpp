@@ -137,3 +137,17 @@ void TowerManager::draw(sf::RenderWindow& window) {
         proj.draw(window);
     }
 }
+
+
+void TowerManager::upgradeTowerAt(const sf::Vector2f& pos) {
+    for (Tower& tower : towers) {
+        if (tower.position == pos) {
+            tower.damage += 10.f; // Aumentar daño
+            std::cout << "🔧 Torre mejorada en " << pos.x << ", " << pos.y << std::endl;
+            break;
+        }
+    }
+}
+
+
+

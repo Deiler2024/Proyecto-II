@@ -32,6 +32,4 @@ public:
     void update(float deltaTime, std::vector<Enemy*>& enemies); // *Actualizar torres y proyectiles*
     void draw(sf::RenderWindow& window);                      // *Dibujar torres y proyectiles*
     void upgradeTowerAt(const sf::Vector2f& pos);             // *Mejorar torre en posición dada*
-    void removeTowerAt(const sf::Vector2f& pos); // 👈 Añadir esta línea en la sección public
-
 };

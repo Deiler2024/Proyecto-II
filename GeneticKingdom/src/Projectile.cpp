@@ -16,33 +16,40 @@ Projectile::Projectile(const sf::Vector2f& startPos, Enemy* target, float speed,
 
 // 🔄 Actualiza la posición y comportamiento del proyectil
 void Projectile::update(float deltaTime) {
-    if (!active) return; // Si el proyectil ya no está activo, no hacer nada
+    if (!active) return;
 
-    if (target) {
-        // 🔍 Calcular dirección hacia el objetivo
+    if (!lostTarget && target && target->getHealth() > 0.f) {
+        // 🎯 Seguir al objetivo mientras esté vivo
         sf::Vector2f dir = target->getPosition() - sprite.getPosition();
         float distance = std::sqrt(dir.x * dir.x + dir.y * dir.y);
 
-        // 🎯 Si está cerca del objetivo, aplicar daño y desactivar
+        fallbackTargetPos = target->getPosition(); // 🔄 Actualizar última posición válida
+
         if (distance < 20.f) {
-            target->takeDamage(damage, damageType); // Aplica daño al objetivo
-            active = false;                         // Desactiva el proyectil
+            target->takeDamage(damage, damageType);
+            active = false;
             return;
         }
 
-        // ➡️ Mover hacia el objetivo
         sf::Vector2f movement = (dir / distance) * speed * deltaTime;
         sprite.move(movement);
     } else {
-        // 🛫 Si no hay objetivo, simplemente mover hacia la derecha
-        sprite.move(speed * deltaTime, 0.f);
+        // 🔀 Objetivo muerto o perdido: ir a última posición conocida
+        lostTarget = true;
 
-        // 🚫 Eliminar si sale de pantalla
-        if (sprite.getPosition().x > 1300) {
-            active = false;
+        sf::Vector2f dir = fallbackTargetPos - sprite.getPosition();
+        float distance = std::sqrt(dir.x * dir.x + dir.y * dir.y);
+
+        if (distance < 20.f) {
+            active = false; // 🚫 Al llegar a la posición final, desaparecer
+            return;
         }
+
+        sf::Vector2f movement = (dir / distance) * speed * deltaTime;
+        sprite.move(movement);
     }
 }
+
 
 // 🎨 Dibuja el proyectil si sigue activo
 void Projectile::draw(sf::RenderWindow& window) const {

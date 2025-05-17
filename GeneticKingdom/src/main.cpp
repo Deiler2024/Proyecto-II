@@ -178,13 +178,19 @@ int main() {
                     }
 
                     if (coins >= cost) {
+                        TileType before = gameMap.getTileType(row, col);  // ← Nuevo: guardamos el tipo actual
                         gameMap.handleClick(mouseX, mouseY, selectedTowerType);
-                        towerManager.addTower(towerPos, selectedTowerType);
-                        coins -= cost;
-                        std::cout << "✅ Torre colocada. Monedas restantes: " << coins << "\n";
-                    } else {
-                        std::cout << "❌ No tienes suficientes monedas para esta torre\n";
+                        TileType after = gameMap.getTileType(row, col);   // ← Nuevo: revisamos el tipo después
+                    
+                        if (before != after) {  // ✅ Solo agregamos la torre si el tile realmente cambió
+                            towerManager.addTower(towerPos, selectedTowerType);
+                            coins -= cost;
+                            std::cout << "✅ Torre colocada. Monedas restantes: " << coins << "\n";
+                        } else {
+                            std::cout << "❌ No se puede colocar una torre aquí.\n";
+                        }
                     }
+                    
 
                 } else {
                     // 📍 Click en el menú de botones
@@ -221,11 +227,20 @@ int main() {
             if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Right) {
                 float mouseX = event.mouseButton.x;
                 float mouseY = event.mouseButton.y;
-
+            
                 if (mouseX < cols * tileSize) {
+                    int col = mouseX / tileSize;
+                    int row = mouseY / tileSize;
+            
+                    // Obtener posición real del tile
+                    sf::Vector2f towerPos(col * tileSize, row * tileSize);
+            
+                    // Eliminar torre del TowerManager y del mapa visual
+                    towerManager.removeTowerAt(towerPos);
                     gameMap.handleClick(mouseX, mouseY, TileType::Empty);
                 }
             }
+            
         }
 
         float deltaTime = clock.restart().asSeconds();

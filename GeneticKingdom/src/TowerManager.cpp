@@ -150,5 +150,11 @@ void TowerManager::upgradeTowerAt(const sf::Vector2f& pos) {
     }
 }
 
+void TowerManager::removeTowerAt(const sf::Vector2f& pos) {
+    towers.erase(std::remove_if(towers.begin(), towers.end(), [&](const Tower& t) {
+        return t.position == pos;
+    }), towers.end());
+}
+
 
 

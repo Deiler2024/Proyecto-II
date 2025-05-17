@@ -42,3 +42,9 @@ void Map::handleClick(float mouseX, float mouseY, TileType type) {  // *Maneja l
 }
 
 
+TileType Map::getTileType(int row, int col) const {
+    if (row >= 0 && row < rows && col >= 0 && col < cols) {
+        return grid[row][col].getType();
+    }
+    return TileType::Empty; // Valor por defecto si es inválido
+}

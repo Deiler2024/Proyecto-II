@@ -14,6 +14,9 @@ private:
     Enemy* target;             // 👹 Enemigo al que persigue
     std::string damageType;    // 🔥 Tipo de daño: "arrow", "magic", "artillery"
     bool active;               // ✅ Si aún sigue en movimiento
+    sf::Vector2f fallbackTargetPos; // 🆕 Última posición válida del enemigo
+    bool lostTarget = false;        // 🆕 Flag para saber si perdió el objetivo
+
 
 public:
     // 🛠 Constructor que inicializa todos los atributos
